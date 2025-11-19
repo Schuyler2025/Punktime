@@ -1,0 +1,56 @@
+Date : 2025-11-18 22:00:30
+Directory : d:\Punktime
+Total : 14 files,  1662 codes, 248 comments, 422 blanks, all 2332 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| Go               |          4 |        838 |         94 |        247 |      1,179 |
+| HTML             |          1 |        329 |          1 |         35 |        365 |
+| JavaScript       |          2 |        187 |         31 |         64 |        282 |
+| Go Checksum File |          1 |        107 |          0 |          1 |        108 |
+| TypeScript       |          2 |         81 |        122 |         67 |        270 |
+| JSON             |          3 |         77 |          0 |          4 |         81 |
+| Go Module File   |          1 |         43 |          0 |          4 |         47 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                              | files      | code       | comment    | blank      | total      |
++---------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                 |         14 |      1,662 |        248 |        422 |      2,332 |
+| . (Files)                                         |          5 |        526 |          9 |        101 |        636 |
+| build                                             |          1 |         15 |          0 |          0 |         15 |
+| build\windows                                     |          1 |         15 |          0 |          0 |         15 |
+| frontend                                          |          6 |        621 |        154 |        167 |        942 |
+| frontend (Files)                                  |          1 |        329 |          1 |         35 |        365 |
+| frontend\wailsjs                                  |          5 |        292 |        153 |        132 |        577 |
+| frontend\wailsjs\go                               |          2 |         36 |          5 |         20 |         61 |
+| frontend\wailsjs\go\main                          |          2 |         36 |          5 |         20 |         61 |
+| frontend\wailsjs\runtime                          |          3 |        256 |        148 |        112 |        516 |
+| pkg                                               |          2 |        500 |         85 |        154 |        739 |
+| pkg\config                                        |          1 |        108 |          0 |         28 |        136 |
+| pkg\log                                           |          1 |        392 |         85 |        126 |        603 |
++---------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                          | language         | code       | comment    | blank      | total      |
++---------------------------------------------------+------------------+------------+------------+------------+------------+
+| d:\Punktime\build\windows\info.json               | JSON             |         15 |          0 |          0 |         15 |
+| d:\Punktime\frontend\index.html                   | HTML             |        329 |          1 |         35 |        365 |
+| d:\Punktime\frontend\wailsjs\go\main\App.d.ts     | TypeScript       |          9 |          2 |         10 |         21 |
+| d:\Punktime\frontend\wailsjs\go\main\App.js       | JavaScript       |         27 |          3 |         10 |         40 |
+| d:\Punktime\frontend\wailsjs\runtime\package.json | JSON             |         24 |          0 |          1 |         25 |
+| d:\Punktime\frontend\wailsjs\runtime\runtime.d.ts | TypeScript       |         72 |        120 |         57 |        249 |
+| d:\Punktime\frontend\wailsjs\runtime\runtime.js   | JavaScript       |        160 |         28 |         54 |        242 |
+| d:\Punktime\go.mod                                | Go Module File   |         43 |          0 |          4 |         47 |
+| d:\Punktime\go.sum                                | Go Checksum File |        107 |          0 |          1 |        108 |
+| d:\Punktime\main.go                               | Go               |        262 |          3 |         77 |        342 |
+| d:\Punktime\pkg\config\config.go                  | Go               |        108 |          0 |         28 |        136 |
+| d:\Punktime\pkg\log\log.go                        | Go               |        392 |         85 |        126 |        603 |
+| d:\Punktime\tray.go                               | Go               |         76 |          6 |         16 |         98 |
+| d:\Punktime\wails.json                            | JSON             |         38 |          0 |          3 |         41 |
+| Total                                             |                  |      1,662 |        248 |        422 |      2,332 |
++---------------------------------------------------+------------------+------------+------------+------------+------------+

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Punktime</title>
+    <style>
+      /* ============================================================================
+       * 全局样式定义
+       * 定义应用程序的整体视觉风格和布局
+       * ============================================================================ */
+
+      /* 基础页面样式 */
+      html,
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        backdrop-filter: blur(10px); /* 背景模糊效果 */
+        color: lightgreen; /* 主色调：亮绿色 */
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* 隐藏滚动条 */
+        user-select: none; /* 禁止文本选择 */
+
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 轻微阴影效果 */
+      }
+
+      /* 倒计时数字样式 */
+      .countdown {
+        font-size: 15vw; /* 响应式字体大小 */
+        font-weight: bold;
+      }
+
+      /* 主容器样式 */
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100vh;
+        padding: 0;
+
+        --wails-draggable: drag; /* Wails框架拖拽支持 */
+        background: rgba(255, 255, 255, 0.08); /* 半透明背景 */
+        backdrop-filter: blur(25px) saturate(120%); /* 强模糊和饱和度 */
+
+        border-radius: 12px;
+        overflow: hidden;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
+
+      /* ============================================================================
+       * 倒计时输入框样式
+       * 用于设置倒计时时长的模态对话框
+       * ============================================================================ */
+
+      /* 遮罩层样式 */
+      .countdown-input-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* 半透明黑色遮罩 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000; /* 确保在最上层 */
+      }
+
+      /* 输入框容器样式 */
+      .countdown-input-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(25px);
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+        min-width: 300px;
+      }
+
+      /* 输入框标题样式 */
+      .countdown-input-title {
+        color: lightgreen;
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      /* 数字输入框样式 */
+      .countdown-input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        color: lightgreen;
+        padding: 6px;
+        font-size: 14px;
+        width: 60px;
+        text-align: center;
+        margin: 0 3px;
+        box-sizing: border-box;
+      }
+
+      /* 输入框聚焦样式 */
+      .countdown-input:focus {
+        outline: none;
+        border-color: lightgreen;
+      }
+
+      /* 按钮容器样式 */
+      .countdown-input-buttons {
+        margin-top: 12px;
+      }
+
+      /* 按钮样式 */
+      .countdown-input-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        color: lightgreen;
+        padding: 5px 12px;
+        margin: 0 3px;
+        cursor: pointer;
+        font-size: 12px;
+        line-height: 1;
+        min-width: 50px;
+      }
+
+      /* 按钮悬停效果 */
+      .countdown-input-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      /* ============================================================================
+       * 动画效果定义
+       * 定义闪烁动画用于倒计时结束提示
+       * ============================================================================ */
+
+      /* 闪烁动画关键帧 */
+      @keyframes punk-blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.25;
+        }
+      }
+
+      /* 闪烁动画类 */
+      .blink {
+        animation: punk-blink 0.35s linear 8; /* 0.35秒间隔，重复8次 */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================================================================
+     * 主界面结构
+     * 应用程序的主要显示区域
+     * ============================================================================ -->
+
+    <!-- 主容器：显示倒计时/时间 -->
+    <div class="container">
+      <div class="countdown" id="countdown"></div>
+    </div>
+
+    <!-- ============================================================================
+     * 倒计时输入框模态对话框
+     * 用于设置倒计时时长的弹出窗口
+     * ============================================================================ -->
+
+    <!-- 倒计时输入框遮罩层 -->
+    <div
+      id="countdownInputOverlay"
+      class="countdown-input-overlay"
+      style="display: none"
+    >
+      <div class="countdown-input-container">
+        <div class="countdown-input-title"></div>
+        <div>
+          <!-- 分钟输入框 -->
+          <input
+            type="number"
+            id="minutesInput"
+            class="countdown-input"
+            min="0"
+            max="59"
+            value="25"
+            placeholder="分"
+          />
+          <span style="color: lightgreen">:</span>
+          <!-- 秒数输入框 -->
+          <input
+            type="number"
+            id="secondsInput"
+            class="countdown-input"
+            min="0"
+            max="59"
+            value="0"
+            placeholder="秒"
+          />
+        </div>
+        <div class="countdown-input-buttons">
+          <!-- 确认按钮 -->
+          <button id="confirmCountdown" class="countdown-input-button">
+            确定
+          </button>
+          <!-- 取消按钮 -->
+          <button id="cancelCountdown" class="countdown-input-button">
+            取消
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================================
+     * Wails框架运行时和Go绑定
+     * 引入Wails框架的JavaScript绑定文件
+     * ============================================================================ -->
+
+    <script src="./wailsjs/runtime/runtime.js" type="module"></script>
+    <script src="./wailsjs/go/main/App.js" type="module"></script>
+
+    <!-- ============================================================================
+     * 主JavaScript逻辑
+     * 处理应用程序的核心功能
+     * ============================================================================ -->
+
+    <script>
+      // 全局变量定义
+      const container = document.querySelector(".container");
+      let isDragging = false;
+      let startX, startY;
+      let relativeX, relativeY;
+      let windowStartX, windowStartY;
+      let windowX, windowY;
+
+      let lastNotificationTime = 0;
+
+      // ============================================================================
+      // 事件监听器：接收后端发送的时间更新事件
+      // ============================================================================
+
+      // 监听倒计时更新事件
+      window.runtime.EventsOn("timerUpdate", (data) => {
+        document.getElementById("countdown").textContent = data;
+      });
+
+      // 监听时间显示更新事件
+      window.runtime.EventsOn("timeUpdate", (data) => {
+        document.getElementById("countdown").textContent = data;
+      });
+
+      // ============================================================================
+      // 闪烁动画管理函数
+      // 用于倒计时结束时的视觉提示
+      // ============================================================================
+
+      const countdownElement = document.getElementById("countdown");
+      let unsubscribeTimerEnd = null;
+      let blinkStopTimer = null;
+
+      /**
+       * 停止闪烁动画
+       */
+      function stopBlink() {
+        if (blinkStopTimer) {
+          clearTimeout(blinkStopTimer);
+          blinkStopTimer = null;
+        }
+        countdownElement.classList.remove("blink");
+      }
+
+      /**
+       * 触发闪烁动画
+       * @param {number} durationMs - 闪烁持续时间（毫秒）
+       */
+      function triggerBlink(durationMs = 3000) {
+        // 保证幂等：每次触发前先清理旧状态
+        stopBlink();
+        countdownElement.classList.add("blink");
+        blinkStopTimer = setTimeout(() => {
+          stopBlink();
+        }, durationMs);
+      }
+
+      /**
+       * 注册倒计时结束事件监听器
+       */
+      function registerTimerEnd() {
+        if (unsubscribeTimerEnd) return; // 防重复注册
+        unsubscribeTimerEnd = window.runtime.EventsOn("timerEnd", (payload) => {
+          triggerBlink();
+        });
+      }
+
+      // 初始化注册倒计时结束监听
+      registerTimerEnd();
+
+      // 窗口卸载时的清理工作
+      window.addEventListener("beforeunload", () => {
+        stopBlink();
+        try {
+          if (unsubscribeTimerEnd) {
+            unsubscribeTimerEnd();
+            unsubscribeTimerEnd = null;
+          } else {
+            // 兜底：移除同名事件的所有监听
+            EventsOff("timerEnd");
+          }
+        } catch (e) {
+          console.warn("beforeunload cleanup failed:", e);
+        }
+      });
+
+      /**
+       * 初始化窗口位置
+       */
+      function initWindowPosition() {
+        window.go.main.App.GetWindowPosition(windowId).then((pos) => {
+          windowX = pos.X;
+          windowY = pos.Y;
+        });
+      }
+    </script>
+
+    <!-- ============================================================================
+     * 倒计时输入框逻辑
+     * 处理倒计时时长的设置
+     * ============================================================================ -->
+
+    <script>
+      // 获取DOM元素引用
+      let countdownInputOverlay = document.getElementById(
+        "countdownInputOverlay"
+      );
+      let minutesInput = document.getElementById("minutesInput");
+      let secondsInput = document.getElementById("secondsInput");
+      let confirmCountdown = document.getElementById("confirmCountdown");
+      let cancelCountdown = document.getElementById("cancelCountdown");
+
+      // 监听后端发送的显示输入框事件
+      window.runtime.EventsOn("showCountdownInput", function () {
+        // 显示输入框
+        countdownInputOverlay.style.display = "flex";
+
+        // 获取当前倒计时时长并填充到输入框
+        window.go.main.App.GetCountdownDuration().then(([minutes, seconds]) => {
+          minutesInput.value = minutes;
+          secondsInput.value = seconds;
+        });
+      });
+
+      // 确认按钮点击事件
+      confirmCountdown.addEventListener("click", function () {
+        let minutes = parseInt(minutesInput.value) || 0;
+        let seconds = parseInt(secondsInput.value) || 0;
+
+        // 验证输入
+        if (minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
+          alert("请输入有效的分钟(0-59)和秒数(0-59)");
+          return;
+        }
+
+        // 发送到后端设置倒计时时长
+        window.go.main.App.SetCountdownDuration(minutes, seconds).then(() => {
+          // 隐藏输入框
+          countdownInputOverlay.style.display = "none";
+          console.log("倒计时时长已设置为: " + minutes + "分" + seconds + "秒");
+        });
+      });
+
+      // 取消按钮点击事件
+      cancelCountdown.addEventListener("click", function () {
+        // 隐藏输入框
+        countdownInputOverlay.style.display = "none";
+      });
+
+      // 点击遮罩层关闭输入框
+      countdownInputOverlay.addEventListener("click", function (e) {
+        if (e.target === countdownInputOverlay) {
+          countdownInputOverlay.style.display = "none";
+        }
+      });
+
+      // 按Space键关闭输入框
+      document.addEventListener("keydown", function (e) {
+        if (e.key === " " && countdownInputOverlay.style.display === "flex") {
+          countdownInputOverlay.style.display = "none";
+        }
+      });
+    </script>
+
+    <!-- ============================================================================
+     * 键盘快捷键处理
+     * 定义应用程序的全局快捷键
+     * ============================================================================ -->
+
+    <script>
+      /**
+       * 在倒计时模式下执行操作
+       * @param {Function} action - 要执行的操作函数
+       */
+      function executeInCountdownMode(action) {
+        window.go.main.App.GetCurrentMode()
+          .then((mode) => {
+            if (mode === "countdown") {
+              action();
+            }
+          })
+          .catch((err) => {
+            console.error("获取当前模式失败:", err);
+          });
+      }
+
+      // 全局键盘事件监听器
+      document.addEventListener("keydown", function (e) {
+        // Ctrl+C: 新建窗口
+        if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
+          e.preventDefault();
+          window.go.main.App.CreateNewWindow();
+        }
+        // ESC: 退出应用
+        else if (e.key === "Escape") {
+          window.runtime.Quit();
+        }
+        // Q: 退出应用
+        else if (e.key === "q" || e.key === "Q") {
+          e.preventDefault();
+          window.runtime.Quit();
+        }
+        // C: 切换到倒计时模式
+        else if (e.key === "c" || e.key === "C") {
+          e.preventDefault();
+          window.go.main.App.SwitchToCountdownMode();
+        }
+        // T: 切换到时间显示模式
+        else if (e.key === "t" || e.key === "T") {
+          e.preventDefault();
+          window.go.main.App.SwitchToTimeMode();
+        }
+        // R: 重置计时器（仅在倒计时模式下）
+        else if (e.key === "r" || e.key === "R") {
+          e.preventDefault();
+          executeInCountdownMode(() => window.go.main.App.ResetTimer());
+        }
+        // B: 开始计时器（仅在倒计时模式下）
+        else if (e.key === "b" || e.key === "B") {
+          e.preventDefault();
+          executeInCountdownMode(() => window.go.main.App.StartTimer());
+        }
+        // E: 暂停计时器（仅在倒计时模式下）
+        else if (e.key === "e" || e.key === "E") {
+          e.preventDefault();
+          executeInCountdownMode(() => window.go.main.App.StopTimer());
+        }
+      });
+    </script>
+  </body>
+</html>

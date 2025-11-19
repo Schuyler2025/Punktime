@@ -1,0 +1,40 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "Punktime",
+  "outputfilename": "punktime",
+  "frontend": {
+    "dir": "./frontend",
+    "install": "npm install",
+    "build": "npm run build",
+    "dev": "npm run dev",
+    "package": {
+      "manager": "npm"
+    }
+  },
+  "backend": {
+    "dir": "./",
+    "go": {
+      "main": "./main.go",
+      "ldflags": "-s -w"
+    }
+  },
+  "author": {
+    "name": "Schuyler",
+    "email": "schuyler@example.com"
+  },
+  "info": {
+    "productName": "Punktime",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright © 2023 Schuyler",
+    "comments": "A countdown timer application"
+  },
+  "nsisType": "multiple",
+  "obfuscated": false,
+  "garbleargs": "",
+  "upx": false,
+  "upxflags": "",
+  "runNonNativeBuildHooks": false,
+  "buildHooks": null
+
+
+}
