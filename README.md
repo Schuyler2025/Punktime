@@ -1,3 +1,13 @@
+<!--
+ * @Author: Schuyler schuylerhu@gmail.com
+ * @Date: 2025-11-19 13:47:56
+ * @LastEditors: Schuyler schuylerhu@gmail.com
+ * @LastEditTime: 2025-11-20 07:51:29
+ * @FilePath: \Punktime\README.md
+ * @Description:
+ *
+ * Copyright (c) 2025 by Schuyler, All Rights Reserved.
+-->
 # Punktime - 简约计时器应用
 
 Punktime 是一个基于 Wails 框架开发的桌面计时器应用，提供简洁的时间显示和倒计时功能。
@@ -38,10 +48,3 @@ wails build
 - **前端**: HTML/CSS/JavaScript
 - **系统集成**: systray托盘支持
 
-## 项目结构
-
-Punktime/
-├── main.go # 主程序逻辑
-├── tray.go # 系统托盘
-├── frontend/ # 前端界面
-└── pkg/ # 内部包（日志、配置）
